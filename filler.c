@@ -6,7 +6,7 @@
 /*   By: ozalisky <ozalisky@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/23 12:40:01 by ozalisky          #+#    #+#             */
-/*   Updated: 2018/05/31 12:07:04 by ozalisky         ###   ########.fr       */
+/*   Updated: 2018/05/31 22:49:15 by ozalisky         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,92 @@ void	write_coord(t_s *db)
 //	ft_printf("_____");
 }
 
+void	ft_check_placement_o(t_s *db, int y, int x) /*if player == 2*/
+{
+	int i;
+	int j;
+	int temp_y = y;
+	int temp_x = x;
+
+	db->temp_distance = 0;
+	db->x_once = 0;
+	i = 0;
+	j = 0;
+	while (i < db->piece_y && temp_y < db->map_y)
+	{
+		while (j < db->piece_x)
+		{
+			if (ft_tolower(db->map[temp_y][temp_x]) == 'x' && db->piece[i][j] == '*')
+			{
+				db->temp_distance = -1;
+				break ;
+			}
+			if (db->piece[i][j] == '*' && j < db->piece_x)
+			{
+				if (ft_tolower(db->map[temp_y][temp_x]) == 'o')
+				{
+					db->x_once++;
+				}
+				else if (temp_y < db->map_y && temp_x < db->map_x)
+				{
+					db->temp_distance += (int)db->map[temp_y][temp_x];
+				}
+				if (db->x_once > 1)
+				{
+					db->temp_distance = -1;
+					break ;
+				}
+			}
+			if (db->temp_distance == -1)
+				break ;
+			j++;
+			if (++temp_x >= db->map_x && db->piece[i][j] == '*')
+			{
+				db->temp_distance = -1;
+				break ;
+			}
+		}
+		if (db->temp_distance == -1)
+			break ;
+		j = 0;
+//		temp_y++;
+		if (++temp_y == db->map_y)
+			db->temp_distance = -1;
+		temp_x = x;
+		i++;
+	}
+	if (db->x_once == 1 && db->temp_distance ^ -1)
+	{
+		i = 0;
+		j = 0;
+// 		while (i < db->piece_y && ft_tolower(db->map[y][x]) == 'x')  //maybe == x is unnecessary
+//		{
+//			while (j < db->piece_x)
+//			{
+//				if (db->piece[i][j] == '*')
+//					break ;
+//				j++;
+//			}
+//			if (db->piece[i][j] == '*')
+//				break ;
+//			j = 0;
+//			i++;
+//		}
+		if (db->distance == 0)
+		{
+			db->distance = db->temp_distance;
+			db->print_y = y - i;
+			db->print_x = x - j;
+		}
+		else if (db->temp_distance < db->distance)
+		{
+			db->distance = db->temp_distance;
+			db->print_y = y - i;
+			db->print_x = x - j;
+		}
+	}
+}
+
 void	ft_check_placement(t_s *db, int y, int x) /*if player == 2*/
 {
 	int i;
@@ -38,20 +124,20 @@ void	ft_check_placement(t_s *db, int y, int x) /*if player == 2*/
 	int temp_y = y;
 	int temp_x = x;
 
-
 	db->temp_distance = 0;
 	db->x_once = 0;
-	i = db->piece_y - 1;
-	j = db->piece_x - 1;
-	while (i > -1)
+	i = 0;
+	j = 0;
+	while (i < db->piece_y && temp_y < db->map_y)
 	{
-		while (j > -1)
+		while (j < db->piece_x)
 		{
-			while (db->piece[i][j] != '*' && j >= 0)
+			if (ft_tolower(db->map[temp_y][temp_x]) == 'o' && db->piece[i][j] == '*')
 			{
-				j--;
+				db->temp_distance = -1;
+				break ;
 			}
-			if (db->piece[i][j] == '*')
+			if (db->piece[i][j] == '*' && j < db->piece_x)
 			{
 				if (ft_tolower(db->map[temp_y][temp_x]) == 'x')
 				{
@@ -69,33 +155,50 @@ void	ft_check_placement(t_s *db, int y, int x) /*if player == 2*/
 			}
 			if (db->temp_distance == -1)
 				break ;
-			if (temp_x - 1 > -1 && j - 1 > -1)
+			j++;
+			if (++temp_x >= db->map_x && db->piece[i][j] == '*')
 			{
-				temp_x--;
+				db->temp_distance = -1;
+				break ;
 			}
-			j--;
 		}
 		if (db->temp_distance == -1)
 			break ;
-		j = db->piece_x - 1;
-		if (temp_y - 1 > -1 && i - 1 > -1)
-		{
-			temp_y--;
-			temp_x = x;
-		}
-		i--;
+		j = 0;
+//		temp_y++;
+		if (++temp_y == db->map_y)
+			db->temp_distance = -1;
+		temp_x = x;
+		i++;
 	}
-	if (db->x_once == 1)
+	if (db->x_once == 1 && db->temp_distance ^ -1)
 	{
-		db->print_y = temp_y;
-		db->print_x = temp_x;
+		i = 0;
+		j = 0;
+// 		while (i < db->piece_y && ft_tolower(db->map[y][x]) == 'x')  //maybe == x is unnecessary
+//		{
+//			while (j < db->piece_x)
+//			{
+//				if (db->piece[i][j] == '*')
+//					break ;
+//				j++;
+//			}
+//			if (db->piece[i][j] == '*')
+//				break ;
+//			j = 0;
+//			i++;
+//		}
 		if (db->distance == 0)
 		{
 			db->distance = db->temp_distance;
+			db->print_y = y - i;
+			db->print_x = x - j;
 		}
 		else if (db->temp_distance < db->distance)
 		{
 			db->distance = db->temp_distance;
+			db->print_y = y - i;
+			db->print_x = x - j;
 		}
 	}
 }
@@ -117,13 +220,16 @@ void	ft_make_move(t_s *db)
 	{
 		while (j < db->map_x)
 		{
-			if (ft_tolower(db->map[i][j]) == 'x')
-			{
+//			if (ft_tolower(db->map[i][j]) == 'x')
+//			{
 				while (piece_y < db->piece_y && i - delta_y > -1)
 				{
 					while (piece_x < db->piece_x && j - delta_x > -1)
 					{
-						ft_check_placement(db, i - delta_y, j - delta_x);
+						if (db->player == 2)
+							ft_check_placement(db, i - delta_y, j - delta_x);
+						else
+							ft_check_placement_o(db, i - delta_y, j - delta_x);
 						delta_x++;
 						piece_x++;
 					}
@@ -132,7 +238,11 @@ void	ft_make_move(t_s *db)
 					delta_x = 0;
 					piece_x = 0;
 				}
-			}
+				delta_y = 0;
+				piece_y = 0;
+				delta_x = 0;
+				piece_x = 0;
+//			}
 			j++;
 		}
 		j = 0;
@@ -145,6 +255,38 @@ int	ft_abs(int a)
 	if (a < 0)
 		return (a * -1);
 	return (a);
+}
+
+void	ft_manhattan_distance_o(t_s *db, int y, int x)
+{
+	int i;
+	int j;
+	int temp;
+
+	i = 0;
+	j = 0;
+	while (i < db->map_y)
+	{
+		while (j < db->map_x)
+		{
+			if (db->map[i][j] == 'x' || db->map[i][j] == 'X')
+			{
+				temp = ft_abs(y - i) + ft_abs(x - j);
+				if (db->map[y][x] != '.')
+				{
+					if ((int)db->map[y][x] > temp)
+					{
+						db->map[y][x] = (unsigned char)temp;
+					}
+				}
+				else
+					db->map[y][x] = (unsigned char)temp;
+			}
+			j++;
+		}
+		j = 0;
+		i++;
+	}
 }
 
 void	ft_manhattan_distance(t_s *db, int y, int x)
@@ -193,7 +335,10 @@ void	ft_calc_distance(t_s *db)
 			if (ft_tolower(db->map[y][x]) != 'o' &&
 				ft_tolower(db->map[y][x]) != 'x')
 			{
-				ft_manhattan_distance(db, y, x);
+				if (db->player == 2)
+					ft_manhattan_distance(db, y, x);
+				else
+					ft_manhattan_distance_o(db, y, x);
 			}
 			x++;
 		}
@@ -244,7 +389,7 @@ void	ft_get_shape(t_s *db)
 	}
 
 	i = 0;
-	db->piece = (char**)malloc(sizeof(char)* (db->piece_y));
+	db->piece = (char**)malloc(sizeof(char*)* (db->piece_y));
 	while(i < db->piece_y)
 	{
 //		free(db->line);
@@ -330,7 +475,7 @@ void	ft_read_game(t_s *db)
 		ft_get_shape(db);
 		ft_calc_distance(db);
 		ft_make_move(db);
-		if (db->print_y > 0 && db->print_x > 0)
+		if (db->print_y > -1 && db->print_x > -1)
 			ft_printf("%d %d\n", db->print_y, db->print_x);
 		int i = 0;
 		while (i < db->map_y)
