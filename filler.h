@@ -6,7 +6,7 @@
 /*   By: ozalisky <ozalisky@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/23 12:40:21 by ozalisky          #+#    #+#             */
-/*   Updated: 2018/05/31 11:51:00 by ozalisky         ###   ########.fr       */
+/*   Updated: 2018/06/02 17:36:18 by ozalisky         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ typedef struct	s_t
 	int			player;
 	int			map_y;
 	int			map_x;
-	char		**map;
+	unsigned char		**map;
 	int			piece_y;
 	int			piece_x;
 	char		**piece;
@@ -35,7 +35,12 @@ typedef struct	s_t
 //	char		**figure;
 
 	int			x_once;
+	int			x_once_y;
+	int			x_once_x;
 	int			temp_distance;
+
+	unsigned char enemy;
+	unsigned char player_c;
 
 }				t_s;
 
