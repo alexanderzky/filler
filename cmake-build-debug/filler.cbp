@@ -86,6 +86,15 @@
 		<Unit filename="/Users/ozalisky/Google Drive/UNIT FACTORY/PUSH/filler/filler.h">
 			<Option target="filler"/>
 		</Unit>
+		<Unit filename="/Users/ozalisky/Google Drive/UNIT FACTORY/PUSH/filler/filler_checks.c">
+			<Option target="filler"/>
+		</Unit>
+		<Unit filename="/Users/ozalisky/Google Drive/UNIT FACTORY/PUSH/filler/filler_map.c">
+			<Option target="filler"/>
+		</Unit>
+		<Unit filename="/Users/ozalisky/Google Drive/UNIT FACTORY/PUSH/filler/filler_shape.c">
+			<Option target="filler"/>
+		</Unit>
 		<Unit filename="/Users/ozalisky/Google Drive/UNIT FACTORY/PUSH/filler/libft/ft_adders.c">
 			<Option target="filler"/>
 		</Unit>

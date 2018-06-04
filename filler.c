@@ -6,310 +6,80 @@
 /*   By: ozalisky <ozalisky@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/23 12:40:01 by ozalisky          #+#    #+#             */
-/*   Updated: 2018/06/02 22:50:27 by ozalisky         ###   ########.fr       */
+/*   Updated: 2018/06/04 16:33:27 by ozalisky         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fcntl.h>
 #include "filler.h"
 
-void	ft_get_player(t_s *db)
+void	ft_save_distance(t_s *db, int y, int x)
 {
-	if (ft_strcmp(db->line, "$$$ exec p1 : [./ozalisky.filler]") == 0)
+	if (db->distance == 0)
 	{
-		db->player = 1;
-		db->enemy = (unsigned char)220;
-		db->player_c = (unsigned char)230;
+		db->distance = db->temp_distance;
+		db->print_y = y;
+		db->print_x = x;
 	}
-	else if (ft_strcmp(db->line, "$$$ exec p2 : [./ozalisky.filler]") == 0)
+	else if (db->temp_distance < db->distance ||
+			(db->temp_distance <= db->distance && db->player == 2 &&
+					y < db->print_y && db->map_y < 20))
 	{
-		db->player = 2;
-		db->enemy = (unsigned char)230;
-		db->player_c = (unsigned char)220;;
+		db->distance = db->temp_distance;
+		db->print_y = y;
+		db->print_x = x;
 	}
-//	free(db->line);
 }
 
 void	ft_check_placement(t_s *db, int y, int x)
 {
-	int i;
-	int j;
-	int temp_y = y;
-	int temp_x = x;
-
+	db->temp_y = y;
+	db->temp_x = x;
 	db->temp_distance = 0;
 	db->x_once = 0;
-//	db->x_once_y = 0;
-//	db->x_once_x = 0;
-	i = 0;
-	j = 0;
-	while (i < db->piece_y && db->temp_distance ^ -1)
+	db->place_piece_y = 0;
+	db->place_piece_x = 0;
+	while (db->place_piece_y < db->piece_y && ft_distance_eval(db))
 	{
-		while (j < db->piece_x && db->temp_distance ^ -1)
-		{
-			if (db->map[temp_y][temp_x] == db->enemy && db->piece[i][j] == '*')
-			{
-				db->temp_distance = -1;
-				break ;
-			}
-			if (db->piece[i][j] == '*' && j < db->piece_x && temp_y < db->map_y)
-			{
-				if (db->map[temp_y][temp_x] == db->player_c)
-				{
-					db->x_once++;
-//					db->x_once_y = i;
-//					db->x_once_x = j;
-				}
-				else if (temp_y < db->map_y && temp_x < db->map_x)
-				{
-					db->temp_distance += (int)db->map[temp_y][temp_x];
-				}
-				if (db->x_once > 1)
-				{
-					db->temp_distance = -1;
-					break ;
-				}
-			}
-			if (db->temp_distance == -1)
-				break ;
-			j++;
-			if (++temp_x >= db->map_x && j < db->piece_x && db->piece[i][j] == '*')
-			{
-				db->temp_distance = -1;
-				break ;
-			}
-			if (temp_y > db->map_y && j < db->piece_x && db->piece[i][j] == '*')
-			{
-				db->temp_distance = -1;
-			}
-		}
-		if (db->temp_distance == -1)
-			break ;
-		j = 0;
-		++i;
-		if (++temp_y >= db->map_y)
-		{
-			while (i < db->piece_y)
-			{
-				while (j < db->piece_x && db->piece[i][j] ^ '*')
-				{
-					j++;
-				}
-				if (db->piece[i][j] == '*')
-				{
-					db->temp_distance = -1;
-					break ;
-				}
-				j = 0;
-				i++;
-			}
-			break ;
-		}
-		temp_x = x;
+		db->place_piece_x = 0;
+		while (db->place_piece_x < db->piece_x && ft_distance_eval(db))
+			ft_check_columns(db);
+		db->place_piece_x = 0;
+		++db->place_piece_y;
+		if (++db->temp_y >= db->map_y)
+			ft_out_of_bonds_y(db);
+		db->temp_x = x;
 	}
-	if (db->x_once == 1 && db->temp_distance ^ -1)
-	{
-		if (db->distance == 0)
-		{
-			db->distance = db->temp_distance;
-			db->print_y = y;
-			db->print_x = x;
-		}
-		else if (db->temp_distance < db->distance || (db->temp_distance <= db->distance && db->player == 2 && y < db->print_y && db->map_y < 20)) //проверка на <= для п2
-		{
-			db->distance = db->temp_distance;
-			db->print_y = y;
-			db->print_x = x;
-		}
-	}
+	if (db->x_once == 1 && ft_distance_eval(db))
+		ft_save_distance(db, y, x);
 }
 
 void	ft_make_move(t_s *db)
 {
-	int i;
-	int j;
-
-	int piece_y = 0;
-	int piece_x = 0;
-
-	int delta_y = 0;
-	int delta_x = 0;
-
-	i = 0;
-	j = 0;
-	while (i < db->map_y)
-	{
-		while (j < db->map_x)
-		{
-			while (piece_y < db->piece_y && i - delta_y > -1 && db->map[i][j] == db->player_c)
-			{
-				while (piece_x < db->piece_x && j - delta_x > -1)
-				{
-					ft_check_placement(db, i - delta_y, j - delta_x);
-					delta_x++;
-					piece_x++;
-				}
-				delta_y++;
-				piece_y++;
-				delta_x = 0;
-				piece_x = 0;
-			}
-			delta_y = 0;
-			piece_y = 0;
-			delta_x = 0;
-			piece_x = 0;
-			j++;
-		}
-		j = 0;
-		i++;
-	}
-}
-
-int	ft_abs(int a)
-{
-	if (a < 0)
-		return (a * -1);
-	return (a);
-}
-
-void	ft_manhattan_distance(t_s *db, int y, int x)
-{
-	int i;
-	int j;
-	int temp;
-
-	i = 0;
-	j = 0;
-	while (i < db->map_y)
-	{
-		while (j < db->map_x)
-		{
-			if (db->map[i][j] == db->enemy)
-			{
-				temp = ft_abs(y - i) + ft_abs(x - j);
-				if (db->map[y][x] != '.')
-				{
-					if ((int)db->map[y][x] > temp)
-					{
-						db->map[y][x] = (unsigned char)temp;
-					}
-				}
-				else
-					db->map[y][x] = (unsigned char)temp;
-			}
-			j++;
-		}
-		j = 0;
-		i++;
-	}
-}
-
-void	ft_calc_distance(t_s *db)
-{
 	int y;
 	int x;
+	int delta_y;
+	int delta_x;
 
-	x = 0;
 	y = 0;
 	while (y < db->map_y)
 	{
+		x = 0;
 		while (x < db->map_x)
 		{
-			if (db->map[y][x] != db->enemy &&
-				db->map[y][x] != db->player_c)
+			delta_y = 0;
+			delta_x = 0;
+			while (db->map[y][x] == db->player_c && delta_y < db->piece_y &&
+					y - delta_y > -1)
 			{
-				ft_manhattan_distance(db, y, x);
+				while (delta_x < db->piece_x && x - delta_x > -1)
+					ft_check_placement(db, y - delta_y, x - delta_x++);
+				++delta_y;
+				delta_x = 0;
 			}
-			x++;
+			++x;
 		}
-		x = 0;
-		y++;
+		++y;
 	}
-}
-
-void	ft_get_shape(t_s *db)
-{
-	long i;
-
-	i = 6;
-//	while (!ft_isdigit(db->line[i]))
-//		i++;
-	if (ft_isdigit(db->line[i]))
-	{
-		db->piece_y = ft_atoi(db->line + i);
-		while (ft_isdigit(db->line[i]))
-			i++;
-		db->piece_x = ft_atoi(db->line + i);
-	}
-
-	i = 0;
-	db->piece = (char**)malloc(sizeof(char*)* (db->piece_y));
-	while(i < db->piece_y)
-	{
-//		free(db->line);
-		get_next_line(db->fd, &db->line);
-//		db->piece[i] = (char*)malloc(sizeof(char)* (db->piece_x + 1));
-		db->piece[i] = db->line;
-//		ft_memset(db->piece[i], '.', db->piece_x);
-//		db->piece[i][db->piece_x] = '\0';
-		i++;
-	}
-//	ft_get_figure(db);
-}
-
-void	ft_get_map(t_s *db)
-{
-	long i;
-
-	i = 8;
-//	while (!ft_isdigit(db->line[i]))
-//		i++;
-	if (ft_isdigit(db->line[i]))
-	{
-		db->map_y = ft_atoi(db->line + i);
-		while (ft_isdigit(db->line[i]))
-			i++;
-		db->map_x = ft_atoi(db->line + i);
-	}
-//	free(db->line);
-	get_next_line(db->fd, &db->line);
-//	free(db->line);
-	i = 0;
-	if (db->map == NULL)
-	{
-		db->map = (unsigned char**)ft_memalloc(sizeof(unsigned char*) * (db->map_y));
-		while(i < db->map_y)
-		{
-			db->line = NULL;
-			get_next_line(db->fd, &db->line);
-			db->map[i] = (unsigned char*)db->line + 4; //для free делать -4
-
-//			free(db->line);
-//			db->map[i] = (char*)malloc(sizeof(char)* (db->map_x + 1));
-//			ft_memset(db->map[i], '.', db->map_x);
-//			db->map[i][db->map_x] = '\0';
-			i++;
-		}
-		int k = 0;
-		int j = 0;
-		while (k < db->map_y)
-		{
-			while (j < db->map_x)
-			{
-				if (db->map[k][j] == 'X' || db->map[k][j] == 'x')
-					db->map[k][j] = (unsigned char)220;
-				else if (db->map[k][j] == 'O' || db->map[k][j] == 'o')
-				{
-					db->map[k][j] = (unsigned char)230;
-				}
-				j++;
-			}
-			j = 0;
-			k++;
-		}
-	}
-//	ft_get_posted_dots(db);
-//	ft_make_move(db);
 }
 
 void	ft_read_game(t_s *db)
@@ -325,35 +95,17 @@ void	ft_read_game(t_s *db)
 		ft_make_move(db);
 		if (db->print_y > -1 && db->print_x > -1)
 			ft_printf("%d %d\n", db->print_y, db->print_x);
-		db->print_y = 0;
-		db->print_x = 0;
-		int i = 0;
-		while (i < db->map_y)
-		{
-			free(db->map[i] - 4);
-			db->map[i] = NULL;
-			i++;
-		}
-		free(db->map);
-		db->map = NULL;
-		i = 0;
-		while (i < db->piece_y)
-		{
-			free(db->piece[i]);
-			db->piece[i] = NULL;
-			i++;
-		}
-		free(db->piece);
-		db->piece = NULL;
+		ft_free_map(db);
+		ft_free_piece(db);
 		db->distance = 0;
 	}
-
+	else
+		free(db->line);
 }
 
 int		main(void)
 {
 	t_s		*db;
-//	ft_strnequ("Plateau", line, 7)
 	if ((db = (t_s *)ft_memalloc(sizeof(t_s))))
 	{
 //		db->fd = open("file2", O_RDONLY);
@@ -361,10 +113,12 @@ int		main(void)
 		while (get_next_line(db->fd, &db->line) > 0)
 		{
 			ft_read_game(db);
-
-
+			db->print_y = 0;
+			db->print_x = 0;
 		}
 	}
+	else
+		ft_printf("%d %d\n", -1, -1);
 	free(db);
-	return (0);
+	exit(0);
 }

@@ -38,7 +38,7 @@ SRC = libft/ft_atoi.c libft/ft_bzero.c libft/ft_isalnum.c libft/ft_isalpha.c lib
 		libft/ft_wcformat.c libft/ft_u_additional.c libft/ft_p_additional.c libft/ft_additional.c libft/ft_di_minus.c libft/ft_di_additional.c libft/ft_swformat.c libft/ft_ws_minus.c libft/ft_ws_plus.c libft/ft_s_plus.c \
 		libft/ft_length_funcs.c libft/ft_x_additional.c libft/ft_x_minus.c libft/ft_itoa_base_dec.c \
         libft/get_next_line.c \
-        filler.c
+        filler.c filler_checks.c filler_map.c filler_shape.c
 
 
 OFILES = $(SRC:.c=.o)
