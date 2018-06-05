@@ -6,7 +6,7 @@
 /*   By: ozalisky <ozalisky@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/23 12:40:21 by ozalisky          #+#    #+#             */
-/*   Updated: 2018/06/04 16:33:27 by ozalisky         ###   ########.fr       */
+/*   Updated: 2018/06/04 17:06:27 by ozalisky         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 typedef struct		s_t
 {
-	int 			fd; /*delete*/
 	char			*line;
 	int				player;
 	int				map_y;
@@ -50,4 +49,4 @@ void				ft_if_star(t_s *db);
 void				ft_out_of_bonds_y(t_s *db);
 void				ft_check_columns(t_s *db);
 void				ft_get_player(t_s *db);
-#endif //FILLER_FILLER_H
+#endif

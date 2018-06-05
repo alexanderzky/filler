@@ -6,7 +6,7 @@
 /*   By: ozalisky <ozalisky@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/23 12:40:01 by ozalisky          #+#    #+#             */
-/*   Updated: 2018/06/04 16:33:27 by ozalisky         ###   ########.fr       */
+/*   Updated: 2018/06/04 17:07:30 by ozalisky         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,11 +106,10 @@ void	ft_read_game(t_s *db)
 int		main(void)
 {
 	t_s		*db;
+
 	if ((db = (t_s *)ft_memalloc(sizeof(t_s))))
 	{
-//		db->fd = open("file2", O_RDONLY);
-		db->fd = 0;
-		while (get_next_line(db->fd, &db->line) > 0)
+		while (get_next_line(0, &db->line) > 0)
 		{
 			ft_read_game(db);
 			db->print_y = 0;

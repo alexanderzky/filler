@@ -6,7 +6,7 @@
 /*   By: ozalisky <ozalisky@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/04 16:19:42 by ozalisky          #+#    #+#             */
-/*   Updated: 2018/06/04 16:24:20 by ozalisky         ###   ########.fr       */
+/*   Updated: 2018/06/04 17:10:39 by ozalisky         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 void	ft_get_player(t_s *db)
 {
-	if (ft_strcmp(db->line, "$$$ exec p1 : [./ozalisky.filler]") == 0)
+	if (ft_strstr(db->line, "p1") && ft_strstr(db->line, "ozalisky.filler"))
 	{
 		db->player = 1;
 		db->enemy = (unsigned char)220;
 		db->player_c = (unsigned char)230;
 	}
-	else if (ft_strcmp(db->line, "$$$ exec p2 : [./ozalisky.filler]") == 0)
+	if (ft_strstr(db->line, "p2") && ft_strstr(db->line, "ozalisky.filler"))
 	{
 		db->player = 2;
 		db->enemy = (unsigned char)230;
@@ -31,8 +31,11 @@ void	ft_get_player(t_s *db)
 
 void	ft_replace_players(t_s *db)
 {
-	int k = 0;
-	int j = 0;
+	int k;
+	int j;
+
+	k = 0;
+	j = 0;
 	while (k < db->map_y)
 	{
 		while (j < db->map_x)
@@ -63,15 +66,15 @@ void	ft_get_map(t_s *db)
 	i = 0;
 	ft_get_map_piece_size(db, 8);
 	free(db->line);
-	get_next_line(db->fd, &db->line);
+	get_next_line(0, &db->line);
 	free(db->line);
 	if (!(db->map = (unsigned char**)ft_memalloc(sizeof(unsigned char*) *
-												 (db->map_y))))
+												(db->map_y))))
 		ft_printf("%d %d\n", -1, -1);
-	while(i < db->map_y)
+	while (i < db->map_y)
 	{
 		db->line = NULL;
-		get_next_line(db->fd, &db->line);
+		get_next_line(0, &db->line);
 		db->map[i] = (unsigned char*)db->line + 4;
 		++i;
 	}

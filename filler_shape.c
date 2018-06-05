@@ -6,7 +6,7 @@
 /*   By: ozalisky <ozalisky@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/04 16:24:26 by ozalisky          #+#    #+#             */
-/*   Updated: 2018/06/04 16:28:25 by ozalisky         ###   ########.fr       */
+/*   Updated: 2018/06/04 17:11:45 by ozalisky         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	ft_free_piece(t_s *db)
 	db->piece = NULL;
 }
 
-int	ft_abs(int a)
+int		ft_abs(int a)
 {
 	if (a < 0)
 		return (a * -1);
@@ -49,7 +49,7 @@ void	ft_manhattan_distance(t_s *db, int y, int x)
 			if (db->map[i][j] == db->enemy)
 			{
 				temp = ft_abs(y - i) + ft_abs(x - j);
-				if (db->map[y][x] ^ '.' )
+				if (db->map[y][x] ^ '.')
 				{
 					if ((int)db->map[y][x] > temp)
 						db->map[y][x] = (unsigned char)temp;
@@ -97,12 +97,12 @@ void	ft_get_shape(t_s *db)
 	}
 	free(db->line);
 	i = 0;
-	if (!(db->piece = (char**)malloc(sizeof(char*)* (db->piece_y))))
+	if (!(db->piece = (char**)malloc(sizeof(char*) * (db->piece_y))))
 		ft_printf("%d %d\n", -1, -1);
-	while(i < db->piece_y)
+	while (i < db->piece_y)
 	{
 		db->line = NULL;
-		get_next_line(db->fd, &db->line);
+		get_next_line(0, &db->line);
 		db->piece[i] = db->line;
 		++i;
 	}

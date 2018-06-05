@@ -6,7 +6,7 @@
 /*   By: ozalisky <ozalisky@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/04 16:31:52 by ozalisky          #+#    #+#             */
-/*   Updated: 2018/06/04 16:33:27 by ozalisky         ###   ########.fr       */
+/*   Updated: 2018/06/04 16:39:49 by ozalisky         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int		ft_distance_eval(t_s *db)
 void	ft_out_bonds_x(t_s *db)
 {
 	while (db->place_piece_x < db->piece_x &&
-		   db->piece[db->place_piece_y][db->place_piece_x] ^ '*')
+		db->piece[db->place_piece_y][db->place_piece_x] ^ '*')
 		++db->place_piece_x;
 	if (db->piece[db->place_piece_y][db->place_piece_x] == '*')
 		db->temp_distance = -1;
@@ -45,7 +45,7 @@ void	ft_out_of_bonds_y(t_s *db)
 	while (db->place_piece_y < db->piece_y)
 	{
 		while (db->place_piece_x < db->piece_x &&
-			   db->piece[db->place_piece_y][db->place_piece_x] ^ '*')
+			db->piece[db->place_piece_y][db->place_piece_x] ^ '*')
 			++db->place_piece_x;
 		if (db->piece[db->place_piece_y][db->place_piece_x] == '*')
 			db->temp_distance = -1;
@@ -59,7 +59,7 @@ void	ft_check_columns(t_s *db)
 	if (db->piece[db->place_piece_y][db->place_piece_x] != '*')
 		++db->place_piece_x;
 	else if (db->piece[db->place_piece_y][db->place_piece_x] == '*' &&
-			 db->map[db->temp_y][db->temp_x] == db->enemy)
+			db->map[db->temp_y][db->temp_x] == db->enemy)
 		db->temp_distance = -1;
 	else if (db->piece[db->place_piece_y][db->place_piece_x] == '*')
 		ft_if_star(db);

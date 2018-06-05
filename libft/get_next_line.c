@@ -6,7 +6,7 @@
 /*   By: ozalisky <ozalisky@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/16 15:06:25 by ozalisky          #+#    #+#             */
-/*   Updated: 2018/05/31 12:28:01 by ozalisky         ###   ########.fr       */
+/*   Updated: 2018/06/04 11:25:06 by ozalisky         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,6 @@ int		ft_read(int fd, t_gnl **list)
 
 	if (!(*list)->buffer)
 		(*list)->buffer = malloc(BUFF_SIZE);
-//			return (-1);
 	if (!(temp = malloc(BUFF_SIZE + (*list)->file_size + 1)))
 		return (-1);
 	if ((*list)->file_size > 0)
